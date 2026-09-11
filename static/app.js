@@ -229,6 +229,8 @@ function renderBatchRibbon() {
   list.innerHTML = "";
 
   const totals = getBatchTotals();
+  const mobileBadge = document.getElementById("mobile-badge-total");
+  if (mobileBadge) mobileBadge.textContent = `$${totals.grandTotal.toFixed(2)}`;
 
   // 1. Master Tab (Always first)
   const masterTab = document.createElement("button");
@@ -853,10 +855,12 @@ function updateMasterSideStats() {
   const sideTotal = document.getElementById("side-grand-total");
   const sideCount = document.getElementById("side-part-count");
   const sideHours = document.getElementById("side-hours-count");
+  const mobileBadge = document.getElementById("mobile-badge-total");
 
   if (sideTotal) sideTotal.textContent = `$${totals.grandTotal.toFixed(2)}`;
   if (sideCount) sideCount.textContent = totals.count;
   if (sideHours) sideHours.textContent = `${totals.totalHours.toFixed(2)} hrs`;
+  if (mobileBadge) mobileBadge.textContent = `$${totals.grandTotal.toFixed(2)}`;
 
   const checklist = document.getElementById("master-participant-checklist");
   if (checklist) {

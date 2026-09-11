@@ -10,7 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* Direct embedded styles to bypass any browser cache */
-    @media screen {
+    /* Desktop Layout (>= 1024px) */
+    @media screen and (min-width: 1024px) {
       html, body {
         margin: 0;
         padding: 0;
@@ -20,6 +21,9 @@
       body {
         display: flex;
         flex-direction: column;
+      }
+      .mobile-view-toggle, .mobile-bottom-bar, .mobile-swipe-hint {
+        display: none !important;
       }
       .app-container {
         display: flex !important;
@@ -75,6 +79,214 @@
         max-height: 100% !important;
         min-height: 0 !important;
         overflow-y: auto !important;
+        display: block !important;
+      }
+    }
+
+    /* Mobile & Tablet Responsive Layout (< 1024px) */
+    @media screen and (max-width: 1023px) {
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: auto !important;
+        min-height: 100%;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        display: block !important;
+        background: #f8fafc;
+      }
+      .app-navbar {
+        padding: 10px 14px !important;
+        height: auto !important;
+        min-height: 52px !important;
+      }
+      .brand-title {
+        font-size: 13px !important;
+        line-height: 1.25 !important;
+      }
+      .brand-subtitle {
+        display: none !important;
+      }
+      .brand-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 12px !important;
+      }
+      .nav-actions {
+        display: none !important; /* Replaced by mobile bottom action bar */
+      }
+
+      /* Mobile View Switcher */
+      .mobile-view-toggle {
+        display: flex !important;
+        position: sticky;
+        top: 0;
+        z-index: 99;
+        background: #ffffff;
+        border-bottom: 1px solid #cbd5e1;
+        padding: 8px 12px;
+        gap: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+      }
+      .mobile-toggle-btn {
+        flex: 1;
+        padding: 10px 8px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+      }
+      .mobile-toggle-btn.active {
+        background: #104E8B !important;
+        color: #ffffff !important;
+        border-color: #104E8B !important;
+        box-shadow: 0 2px 6px rgba(16, 78, 139, 0.25);
+      }
+      .mobile-toggle-btn.active #mobile-badge-total {
+        color: #ffffff !important;
+      }
+      #mobile-badge-total {
+        font-weight: 800;
+        color: #0f766e;
+      }
+
+      .app-container {
+        display: block !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Mobile Editor View */
+      body.mobile-mode-editor .sidebar-panel {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 12px 14px 100px 14px !important;
+        border: none !important;
+        background: transparent !important;
+      }
+      body.mobile-mode-editor .preview-panel {
+        display: none !important;
+      }
+
+      /* Mobile Preview View */
+      body.mobile-mode-preview .sidebar-panel {
+        display: none !important;
+      }
+      body.mobile-mode-preview .preview-panel {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        padding: 12px 10px 100px 10px !important;
+      }
+      body.mobile-mode-preview .excel-sheet {
+        min-width: 680px; /* Preserve table formatting while enabling smooth finger swiping */
+        margin: 0 auto;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      }
+      .mobile-swipe-hint {
+        display: block !important;
+        text-align: center;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #0f766e;
+        background: #f0fdfa;
+        border: 1px solid #ccfbf1;
+        border-radius: 6px;
+        padding: 6px 10px;
+        margin-bottom: 10px;
+      }
+
+      /* Touch ergonomics */
+      input, select, textarea {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS */
+        padding: 10px 12px !important;
+        border-radius: 8px !important;
+      }
+      .btn {
+        min-height: 42px !important;
+        font-size: 14px !important;
+        border-radius: 8px !important;
+      }
+      .form-row, .form-row-3 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+      }
+      .minute-presets {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        margin-top: 6px !important;
+      }
+      .minute-preset-btn {
+        flex: 1 1 52px !important;
+        min-height: 38px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        padding: 6px 4px !important;
+        border-radius: 6px !important;
+      }
+      .quick-nav-bar {
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        padding: 6px 0 !important;
+      }
+      .quick-nav-btn {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+      }
+      .batch-tabs-row {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        padding-bottom: 6px !important;
+      }
+
+      /* Mobile Sticky Bottom Action Bar */
+      .mobile-bottom-bar {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: #ffffff;
+        border-top: 1px solid #cbd5e1;
+        padding: 10px 14px;
+        gap: 10px;
+        box-shadow: 0 -3px 12px rgba(0,0,0,0.08);
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+      }
+      .btn-mobile-action {
+        flex: 1 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 6px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
       }
     }
 
@@ -252,6 +464,16 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile View Switcher (Visible on Mobile/Tablet screens) -->
+  <div class="mobile-view-toggle">
+    <button type="button" id="btn-toggle-editor" class="mobile-toggle-btn active" onclick="setMobileView('editor')">
+      ✏️ Edit Claim
+    </button>
+    <button type="button" id="btn-toggle-preview" class="mobile-toggle-btn" onclick="setMobileView('preview')">
+      👁️ View Invoice (<span id="mobile-badge-total">$0.00</span>)
+    </button>
+  </div>
 
   <!-- Main Container -->
   <main class="app-container">
@@ -618,8 +840,20 @@
 
       </div>
     </section>
-
   </main>
+
+  <!-- Mobile Sticky Bottom Action Bar (Visible only on screens < 1024px) -->
+  <div class="mobile-bottom-bar">
+    <button type="button" class="btn btn-excel btn-mobile-action" onclick="downloadMasterExcel()" title="Download Full Excel Workbook">
+      📥 Master Excel
+    </button>
+    <button type="button" class="btn btn-secondary btn-mobile-action" onclick="downloadActiveInvoice()" title="Download Single Invoice Excel">
+      📄 Active Inv
+    </button>
+    <button type="button" class="btn btn-pdf btn-mobile-action" onclick="window.print()" title="Print or Save PDF">
+      🖨️ PDF
+    </button>
+  </div>
 
   <script>
     function jumpToCard(cardId) {
@@ -632,7 +866,27 @@
         }, 1200);
       }
     }
+
+    function setMobileView(mode) {
+      if (mode === 'preview') {
+        document.body.classList.remove('mobile-mode-editor');
+        document.body.classList.add('mobile-mode-preview');
+        document.getElementById('btn-toggle-editor')?.classList.remove('active');
+        document.getElementById('btn-toggle-preview')?.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.body.classList.remove('mobile-mode-preview');
+        document.body.classList.add('mobile-mode-editor');
+        document.getElementById('btn-toggle-preview')?.classList.remove('active');
+        document.getElementById('btn-toggle-editor')?.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('mobile-mode-editor');
+    });
   </script>
-  <script src="/static/app.js?v=20"></script>
+  <script src="/static/app.js?v=21"></script>
 </body>
 </html>
