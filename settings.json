@@ -1,0 +1,22 @@
+{
+  "current_invoice_number": 1,
+  "hourly_rate": 45.28,
+  "provider": {
+    "name": "Richa Patel",
+    "business_name": "Richa Patel",
+    "account_name": "Richa Patel",
+    "abn": "88 475 952 165",
+    "address": "8/41 McMinn Street, Darwin City NT 0800",
+    "email_phone": "ripatel291202@gmail.com",
+    "bank_name": "Westpac Bank",
+    "bsb": "732-273",
+    "account_number": "502413"
+  },
+  "customer": {
+    "name": "Top End Support Collective",
+    "attention": "Kerrie Toll",
+    "abn": "",
+    "address": "1 Palmerston cct",
+    "reference": "Subcontract service claim"
+  }
+}
