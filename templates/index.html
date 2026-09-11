@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NDIS Support Coordinator Invoice Portal - Top End Support Collective</title>
+  <link rel="stylesheet" href="/static/styles.css?v=20">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Direct embedded styles to bypass any browser cache */
+    @media screen {
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      .app-container {
+        display: flex !important;
+        flex: 1 !important;
+        height: calc(100vh - 62px) !important;
+        max-height: calc(100vh - 62px) !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
+      }
+      .sidebar-panel {
+        flex: 0 0 460px !important;
+        width: 460px !important;
+        min-width: 400px !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow-y: scroll !important; /* Force visible scrollbar */
+        overflow-x: hidden !important;
+        padding: 16px 20px 140px 20px !important;
+        background: #ffffff !important;
+        border-right: 1px solid #e2e8f0 !important;
+        scrollbar-width: auto !important;
+        scrollbar-color: #64748b #e2e8f0 !important;
+        box-sizing: border-box !important;
+        display: block !important;
+      }
+      .sidebar-panel::-webkit-scrollbar {
+        width: 11px !important;
+      }
+      .sidebar-panel::-webkit-scrollbar-track {
+        background: #f1f5f9 !important;
+      }
+      .sidebar-panel::-webkit-scrollbar-thumb {
+        background: #64748b !important;
+        border-radius: 6px !important;
+      }
+      .control-card {
+        display: block !important;
+        flex: 0 0 auto !important;
+        flex-shrink: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        margin-bottom: 18px !important;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      }
+      .preview-panel {
+        flex: 1 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+      }
+    }
+
+    /* Print & Save as PDF Stylesheet */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm 12mm 10mm 12mm;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Hide all interactive UI chrome, buttons, sidebar, and navbar */
+      .app-navbar,
+      .sidebar-panel,
+      .quick-nav-bar,
+      .batch-ribbon-card,
+      .nav-actions,
+      button,
+      .btn,
+      .minute-presets,
+      .tab-close-btn,
+      .remove-item-btn {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      .app-container {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .preview-panel {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+      .excel-sheet {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+      /* Ensure the hidden sheet stays hidden */
+      .excel-sheet[style*="display: none"],
+      .excel-sheet[style*="display:none"] {
+        display: none !important;
+      }
+      /* Tables formatting */
+      .excel-table,
+      .items-table,
+      .payment-grid-table,
+      .totals-table {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-collapse: collapse !important;
+        margin-bottom: 10px !important;
+      }
+      .excel-table td, .excel-table th,
+      .items-table td, .items-table th,
+      .payment-grid-table td, .payment-grid-table th,
+      .totals-table td {
+        border: 1px solid #b0bec5 !important;
+        font-size: 10.5pt !important;
+        padding: 4px 8px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      /* Column widths for meta tables so labels and values never overlap */
+      .excel-table td.tbl-lbl {
+        width: 24% !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        background-color: #f8fafc !important;
+      }
+      .excel-table td.tbl-val {
+        width: 26% !important;
+      }
+      .sec-hdr-blue {
+        background-color: #D9E1F2 !important;
+        color: #104E8B !important;
+        font-weight: 700 !important;
+        font-size: 11pt !important;
+      }
+      .items-table th {
+        background-color: #104E8B !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 10.5pt !important;
+      }
+      .totals-table {
+        width: 50% !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+      }
+      .total-due-row td {
+        background-color: #1F4E79 !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 12pt !important;
+      }
+      .payment-note-box {
+        background-color: #E2EFDA !important;
+        color: #1b3815 !important;
+        font-size: 9.5pt !important;
+      }
+      .sec-hdr-green {
+        background-color: #E2EFDA !important;
+        color: #1b3815 !important;
+        font-weight: 700 !important;
+      }
+      .compliance-box {
+        border: 1px solid #cbd5e1 !important;
+        padding: 6px 8px !important;
+        font-size: 8.5pt !important;
+        line-height: 1.35 !important;
+        margin-top: 10px !important;
+      }
+      .ndis-links {
+        font-size: 7.5pt !important;
+        color: #64748b !important;
+        margin-top: 4px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="app-navbar">
+    <div class="brand-section">
+      <div class="brand-icon">SC</div>
+      <div>
+        <div class="brand-title">NDIS Support Coordinator Invoice System</div>
+        <div class="brand-subtitle">Contractor Claim Portal • Top End Support Collective</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button id="btn-download-master-excel" class="btn btn-excel" title="Download Master Excel with All Participant Sheets">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        📥 Download Master Excel (.xlsx)
+      </button>
+      <button id="btn-download-excel" class="btn btn-secondary btn-sm" title="Download single invoice for current participant">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        📄 Active Invoice (.xlsx)
+      </button>
+      <button id="btn-print-pdf" class="btn btn-pdf">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Download PDF / Print
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    
+    <!-- Sidebar Controls -->
+    <aside class="sidebar-panel">
+
+      <!-- Batch Claim Ribbon (Switch between Master Bill and Individual Participants) -->
+      <div class="batch-ribbon-card">
+        <div class="batch-ribbon-header">
+          <span style="font-weight:700; font-size:12px; color:#1e293b; text-transform:uppercase; letter-spacing:0.5px;">Claiming Workspace</span>
+          <button type="button" id="btn-batch-add-participant" class="btn btn-primary btn-sm" style="padding:3px 8px; font-size:11px;">➕ Add Participant</button>
+        </div>
+        <div id="batch-tabs-list" class="batch-tabs-row"></div>
+      </div>
+
+      <!-- MASTER BILL CONTROLS (Visible when Master Bill tab is selected) -->
+      <div id="panel-master-controls" style="display:none;">
+        <div class="control-card">
+          <div class="card-header" style="background: linear-gradient(135deg, #0f766e, #115e59); color:white;">
+            <span>📑 Master Bill Details (Owner)</span>
+            <span class="status-badge-green" style="background:rgba(255,255,255,0.2); color:white;">Final Bill</span>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Claim Title / Batch Reference</label>
+              <input type="text" id="inp-batch-ref" value="Fortnightly Claim (01 Sep - 14 Sep 2026)">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Claim Issue Date</label>
+                <input type="text" id="inp-batch-date" value="07 Sep 2026">
+              </div>
+              <div class="form-group">
+                <label>Payment Due Date</label>
+                <input type="text" id="inp-batch-due" value="21 Sep 2026">
+              </div>
+            </div>
+
+            <!-- Executive Grand Total Summary Widget -->
+            <div class="master-stat-card">
+              <div style="font-size:12px; opacity:0.9; margin-bottom:4px;">TOTAL AMOUNT DUE FROM TOP END SUPPORT COLLECTIVE:</div>
+              <div id="side-grand-total" style="font-size:26px; font-weight:800; letter-spacing:0.5px; color:#ffffff;">$0.00</div>
+              <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12px; border-top:1px solid rgba(255,255,255,0.25); padding-top:8px;">
+                <span>Total Participants: <strong id="side-part-count">0</strong></span>
+                <span>Total Billable Hours: <strong id="side-hours-count">0.00 hrs</strong></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight:700; color:#334155;">Participants in this Final Bill:</label>
+              <div id="master-participant-checklist" class="master-part-list"></div>
+            </div>
+
+            <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+              <button type="button" id="btn-side-download-master" class="btn btn-excel" style="width:100%; justify-content:center; padding:10px;">
+                📥 Download Consolidated Master Excel (.xlsx)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTICIPANT CONTROLS WRAPPER (Visible when a Participant tab is selected) -->
+      <div id="panel-participant-controls">
+
+        <!-- Quick Navigation Header (Smooth Scroll, Never Hides Any Section) -->
+        <div class="quick-nav-bar">
+          <span class="quick-nav-title">Jump:</span>
+          <button type="button" onclick="jumpToCard('card-participant')" class="quick-nav-btn">👤 Participant</button>
+          <button type="button" onclick="jumpToCard('card-invoice')" class="quick-nav-btn">📄 Invoice #</button>
+          <button type="button" onclick="jumpToCard('card-items')" class="quick-nav-btn">⏱️ Minutes</button>
+          <button type="button" onclick="jumpToCard('card-bank')" class="quick-nav-btn">⚙️ Bank</button>
+        </div>
+
+        <!-- Participant Selector Card -->
+        <div class="control-card" id="card-participant">
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>👤 Participant & Claim</span>
+              <span id="badge-part-mode" class="status-badge-blue">Saved Profile</span>
+            </div>
+            <button type="button" id="btn-new-participant" class="btn btn-secondary btn-sm" title="Add a brand new participant">➕ New Participant</button>
+          </div>
+          <div class="card-body">
+          <div class="form-group" id="grp-sel-participant">
+            <label>Select Saved Participant</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <select id="sel-participant" style="flex:1;"></select>
+              <button type="button" id="btn-delete-participant" class="btn btn-secondary btn-sm" title="Delete selected participant profile from saved list" style="padding:6px 12px; color:#ef4444; border-color:#fca5a5; font-size:12px; font-weight:600; white-space:nowrap;">🗑️ Delete Profile</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Participant Name</label>
+              <input type="text" id="inp-part-name" placeholder="Full Name (e.g. Participant Name)">
+            </div>
+            <div class="form-group">
+              <label>NDIS Number</label>
+              <input type="text" id="inp-part-ndis" placeholder="430XXXXXX">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Participant Address (Editable / Can change per claim)</label>
+            <input type="text" id="inp-part-address" placeholder="e.g. Palmerston NT (or change/clear anytime)">
+          </div>
+          <div class="form-group">
+            <label>Default Support Item Code</label>
+            <input type="text" id="inp-part-item" value="07_002_0106_8_3">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <span style="font-size:11px; color:#64748b;">Save to list for 1-click access:</span>
+            <button type="button" id="btn-save-participant" class="btn btn-secondary btn-sm">💾 Save Participant Profile</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Details Card -->
+      <div class="control-card" id="card-invoice">
+        <div class="card-header">
+          <span>📄 Invoice Details</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Invoice Number</label>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <button type="button" id="btn-inv-prev" class="btn btn-secondary btn-sm" style="padding:6px 12px; font-weight:bold;" title="Previous Invoice">-</button>
+              <input type="text" id="inp-inv-number" value="1" style="font-weight:bold; text-align:center; font-size:15px; color:#104E8B;">
+              <button type="button" id="btn-inv-next" class="btn btn-secondary btn-sm" style="padding:6px 12px; font-weight:bold;" title="Next Invoice">+</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Invoice Date</label>
+              <input type="text" id="inp-inv-date" value="07 Sep 2026">
+            </div>
+            <div class="form-group">
+              <label>Payment Due Date</label>
+              <input type="text" id="inp-inv-due" value="21 Sep 2026">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line Items Card -->
+      <div class="control-card" id="card-items">
+        <div class="card-header">
+          <span>⏱️ Service Delivered & Minutes</span>
+          <button id="btn-add-item" class="btn btn-primary btn-sm">➕ Add Item</button>
+        </div>
+        <div class="card-body">
+          <div id="line-items-container" style="display:flex; flex-direction:column; gap:12px;"></div>
+        </div>
+      </div>
+      <!-- End #panel-participant-controls -->
+
+      <!-- Rate Settings Card -->
+      <div class="control-card" id="card-rate">
+        <div class="card-header">
+          <span>💰 Contractor Hourly Rate</span>
+          <span id="subcontract-rate-badge" style="font-size:13px; font-weight:700; color:var(--excel-green);">$45.28 / hr</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Hourly Rate ($/hr)</label>
+            <input type="number" step="0.01" id="inp-subcontract-rate" value="45.28" style="font-size:15px; font-weight:700; color:#104E8B;">
+          </div>
+          <div class="input-badge">Services and session minutes are calculated using this hourly rate.</div>
+        </div>
+      </div>
+
+      <!-- Provider & Customer Settings (Open by default) -->
+      <div class="control-card" id="card-bank">
+        <div class="card-header">
+          <span>⚙️ Provider & Bank Details</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Provider Name / Trading Name</label>
+            <input type="text" id="inp-provider-name" value="Richa Patel">
+          </div>
+          <div class="form-group">
+            <label>ABN</label>
+            <input type="text" id="inp-provider-abn" value="88 475 952 165" placeholder="88 475 952 165">
+          </div>
+          <div class="form-group">
+            <label>Provider Address</label>
+            <input type="text" id="inp-provider-address" value="8/41 McMinn Street, Darwin City NT 0800" placeholder="8/41 McMinn Street, Darwin City NT 0800">
+          </div>
+          <div class="form-group">
+            <label>Email / Phone</label>
+            <input type="text" id="inp-provider-email-phone" value="ripatel291202@gmail.com">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Account Name</label>
+              <input type="text" id="inp-bank-account-name" value="Richa Patel">
+            </div>
+            <div class="form-group">
+              <label>Bank Name</label>
+              <input type="text" id="inp-bank-name" value="Westpac Bank" placeholder="Westpac Bank">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>BSB</label>
+              <input type="text" id="inp-bank-bsb" value="732-273" placeholder="732-273">
+            </div>
+            <div class="form-group">
+              <label>Account Number</label>
+              <input type="text" id="inp-bank-account" value="502413" placeholder="502413">
+            </div>
+          </div>
+
+          <hr style="border:0; border-top:1px solid #e2e8f0; margin:8px 0;">
+
+          <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" id="inp-customer-name" value="Top End Support Collective">
+          </div>
+          <div class="form-group">
+            <label>Attention</label>
+            <input type="text" id="inp-customer-attention" value="Kerrie Toll">
+          </div>
+          <div class="form-group">
+            <label>Customer Address</label>
+            <input type="text" id="inp-customer-address" value="1 Palmerston cct">
+          </div>
+          <div class="form-group">
+            <label>Customer Reference</label>
+            <input type="text" id="inp-customer-ref" value="50% subcontract service claim">
+          </div>
+          <div style="margin-top:10px;">
+            <button type="button" id="btn-save-settings" class="btn btn-primary" style="width:100%; justify-content:center;">
+              💾 Save My Details as Default
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- Live Excel Document Preview Panel -->
+    <section class="preview-panel">
+      
+      <!-- Master Bill Sheet (Owner Summary) -->
+      <div class="excel-sheet" id="master-bill-sheet" style="display:none;">
+        
+        <!-- Table 1: Provider & Customer Details -->
+        <table class="excel-table" id="master-preview-table-1"></table>
+
+        <div class="block-gap"></div>
+
+        <!-- Table 2: Master Statement Meta -->
+        <table class="excel-table" id="master-preview-table-2"></table>
+
+        <div class="block-gap"></div>
+
+        <!-- Table 3: Consolidated Participants Summary Table -->
+        <table class="items-table" id="master-items-table">
+          <thead>
+            <tr>
+              <th style="width:45px; text-align:center;">#</th>
+              <th style="text-align:left;">Participant Name</th>
+              <th style="width:130px; text-align:center;">NDIS Number</th>
+              <th style="width:110px; text-align:center;">Invoice #</th>
+              <th style="width:90px; text-align:center;">Minutes</th>
+              <th style="width:90px; text-align:right;">Hours</th>
+              <th style="width:130px; text-align:right;">Total Amount</th>
+            </tr>
+          </thead>
+          <tbody id="master-items-body"></tbody>
+        </table>
+
+        <!-- Master Totals Table -->
+        <table class="totals-table">
+          <tr>
+            <td class="tot-lbl">Total Billable Hours</td>
+            <td class="tot-val" id="master-total-hours">0.00 hrs</td>
+          </tr>
+          <tr>
+            <td class="tot-lbl">Subtotal</td>
+            <td class="tot-val" id="master-subtotal">$0.00</td>
+          </tr>
+          <tr>
+            <td class="tot-lbl">GST (0%)</td>
+            <td class="tot-val" id="master-gst">$0.00</td>
+          </tr>
+          <tr class="total-due-row">
+            <td class="tot-lbl">Final Bill Total Payable</td>
+            <td class="tot-val" id="master-grand-total">$0.00</td>
+          </tr>
+        </table>
+
+        <!-- Master Remittance and Payment Note -->
+        <table class="payment-grid-table" id="master-payment-grid"></table>
+
+        <!-- Compliance Disclaimers & References -->
+        <div class="compliance-box">
+          IMPORTANT: Consolidated Subcontract Claim for Top End Support Collective. Retain case notes or support logs evidencing service dates and duration for each participant listed. Individual participant invoices are attached in the workbook tabs for your NDIS PRODA / PACE claiming records.
+        </div>
+
+        <div class="ndis-links">
+          NDIS references: https://www.ndis.gov.au/providers/working-providers/reporting-and-recording-keeping/what-are-record-keeping-requirements | https://www.ndis.gov.au/providers/pricing-and-payments/pricing/pricing-arrangements
+        </div>
+
+      </div>
+
+      <!-- Single Participant Invoice Sheet -->
+      <div class="excel-sheet" id="invoice-sheet">
+        
+        <!-- Table 1: Provider & Customer Details -->
+        <table class="excel-table" id="preview-table-1"></table>
+
+        <div class="block-gap"></div>
+
+        <!-- Table 2: Invoice & Participant Details -->
+        <table class="excel-table" id="preview-table-2"></table>
+
+        <div class="block-gap"></div>
+
+        <!-- Table 3: Service Delivery Line Items -->
+        <table class="items-table" id="preview-items-table">
+          <thead>
+            <tr>
+              <th class="col-service-period">Service period</th>
+              <th class="col-support-delivered">NDIS support delivered</th>
+              <th class="col-support-item">Support item</th>
+              <th class="col-minutes">Minutes</th>
+              <th class="col-hours">Hours</th>
+              <th class="col-amount">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="preview-items-body"></tbody>
+        </table>
+
+        <!-- Totals Table -->
+        <table class="totals-table">
+          <tr>
+            <td class="tot-lbl">Subtotal</td>
+            <td class="tot-val" id="preview-subtotal">$19.40</td>
+          </tr>
+          <tr>
+            <td class="tot-lbl">GST (0%)</td>
+            <td class="tot-val" id="preview-gst">$0.00</td>
+          </tr>
+          <tr class="total-due-row">
+            <td class="tot-lbl">Invoice total</td>
+            <td class="tot-val" id="preview-total">$19.40</td>
+          </tr>
+        </table>
+
+        <!-- Rate & Payment Details Grid -->
+        <table class="payment-grid-table" id="preview-payment-grid"></table>
+
+        <!-- Compliance Disclaimers & References -->
+        <div class="compliance-box">
+          IMPORTANT: Confirm the participant address and any applicable customer ABN before issue. Retain case notes or support logs evidencing the service dates and duration. This workbook is a billing document and does not replace service-delivery records.
+        </div>
+
+        <div class="ndis-links">
+          NDIS references: https://www.ndis.gov.au/providers/working-providers/reporting-and-recording-keeping/what-are-record-keeping-requirements | https://www.ndis.gov.au/providers/pricing-and-payments/pricing/pricing-arrangements
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function jumpToCard(cardId) {
+      const el = document.getElementById(cardId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.35)';
+        setTimeout(() => {
+          el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.03)';
+        }, 1200);
+      }
+    }
+  </script>
+  <script src="/static/app.js?v=20"></script>
+</body>
+</html>
